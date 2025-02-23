@@ -63,9 +63,10 @@ const CardActionsStyled = styled(CardActions)({
 
 const Recipe = () => {
   const [recipes, setRecipes] = useState<Rec[]>([]);
-  const { user } = useUser(); // שימוש בפונקציה הבטוחה
+  const { user } = useUser();
   const navigate = useNavigate();
 
+  // בעת שינוי במערך המתכונים תהיה טעינה מחדש 
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
@@ -82,6 +83,7 @@ const Recipe = () => {
     fetchRecipes();
   }, [recipes]);
 
+  //פונקצית מחיקת מתכון
   const delRecipe = async (recipe: Rec) => {
     console.log("in recipe page user id is:", user.Id);
     if (recipe.UserId === user.Id) {
@@ -97,7 +99,7 @@ const Recipe = () => {
     }
   };
 
-  // ######################
+  // פונקצית עריכת מתכון
   const editRecipe = (recipe: Rec) => {
     navigate(`/home/edit/${recipe.Id}`, { state: { recipe } });
   };
@@ -107,18 +109,20 @@ const Recipe = () => {
       <RecipeGrid container spacing={4} justifyContent="center">
         <Grid item xs={12}>
           <Typography variant="h3" align="center" style={{ marginBottom: '20px', color: '#333' }}>
-            המומלצים שלנו
+            🤍 :המומלצים שלנו
           </Typography>
         </Grid>
+
         {recipes.map((recipe) => (
           <Grid item xs={12} sm={6} key={recipe.Id} display="flex" justifyContent="center">
             <CustomCard>
               <CardMedia
                 component="img"
                 height="250"
-                image={pastaImg}
-                alt={recipe.Name}
+                image={recipe.Img}
+                alt={pastaImg}
               />
+
               <CardContent>
                 <Typography gutterBottom variant="h5">{recipe.Name}</Typography>
                 <Typography variant="body2" color="text.secondary">
@@ -128,7 +132,9 @@ const Recipe = () => {
                   <strong>הוראות:</strong> {recipe.Instructions} {/* הצגת ההוראות */}
                 </Typography>
               </CardContent>
+
               <Typography variant="h6" sx={{ marginTop: 2 }}>רכיבים:</Typography>
+
               <ul style={{ padding: 0, margin: 0, listStyleType: "none" }}>
                 {recipe.Ingridents.map((ingredient, index) => (
                   <li key={index} style={{ marginBottom: "5px" }}>
@@ -136,6 +142,7 @@ const Recipe = () => {
                   </li>
                 ))}
               </ul>
+
               {/* הכפתורים יופיעו בתוך כל כרטיס בנפרד */}
               <CardActionsStyled>
                 <CustomButton size="small" onClick={() => delRecipe(recipe)}>

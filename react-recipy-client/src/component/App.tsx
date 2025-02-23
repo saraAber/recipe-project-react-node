@@ -10,12 +10,9 @@ import UserProvider from '../use-Context/userProvider';
 const App = () => {
   return (
     <>
-      <UserProvider>
-        <>    
-        <h1>vf jv</h1>    
-          {/* <Home /> */}
-        </>
-      </UserProvider>
+
+      <Home />
+
     </>
   )
 }

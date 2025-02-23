@@ -13,13 +13,13 @@ export const UserContext = createContext<UserContextType | undefined>(undefined)
 // קומפוננטת הקונטקסט
 const UserProvider = ({ children }: { children: ReactElement }) => {
     const [user, setUser] = useState<User>({
-        id: 0,
-        password: "",
-        name: "",
-        userName: "",
-        phone: "",
-        email: "",
-        tz: ""
+        Id: 0,
+        Password: "",
+        Name: "",
+        UserName: "",
+        Phone: "",
+        Email: "",
+        Tz: ""
     });
 
     return (

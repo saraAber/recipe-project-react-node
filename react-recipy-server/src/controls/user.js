@@ -1,15 +1,16 @@
 const { LoginDb, SighinDb } = require("../reposetory/user");
 
-const Login = (req, res) => {
+const Login = (req, res) => 
+{
     const { UserName, Password } = req.body;
 
     LoginDb(UserName, Password)
         .then(findUser => {
-            if (findUser) {
+            if (findUser) 
+            {
                 return res.send(findUser)
             }
             return res.status(401).send('user not found!');
-
         })
         .catch(err => {
             if (err?.errors[0]) {

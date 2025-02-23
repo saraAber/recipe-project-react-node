@@ -12,6 +12,7 @@ import {
   IconButton,
   FormControl,
   InputLabel,
+  styled,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -22,7 +23,7 @@ import { UserContext, useUser } from "../use-Context/userProvider";
 import { useNavigate } from "react-router-dom";
 
 const recipeSchema = Yup.object().shape({
-  
+
   name: Yup.string().required("שם המתכון חובה"),
   instructions: Yup.string().required("הוראות הכנה חובה"),
   difficulty: Yup.string().required("רמת קושי חובה"),
@@ -58,12 +59,41 @@ type FormValues = {
     type: string;
   }>;
 };
+// ============================================
+// עיצוב מותאם אישית לשדות הטופס
+const CustomTextField = styled(TextField)({
+  width: '100%',
+  marginBottom: '20px', // רווח בין השדות
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: '#444', // קו מיתאר אפור כהה יותר
+    },
+    '&:hover fieldset': {
+      borderColor: '#444', // קו מיתאר אפור כהה יותר בהובר
+    },
+  },
+  '& .MuiInputLabel-root': {
+    color: '#444', // צבע האותיות של הלייבל אפור כהה יותר
+  }
+});
 
+// עיצוב מותאם אישית לכפתור
+const CustomButton = styled(Button)({
+  backgroundColor: '#444', // צבע רקע אפור כהה
+  color: 'white', // צבע הטקסט
+  padding: '10px 0', // רווח פנימי
+  borderRadius: '8px', // פינות מעוגלות
+  boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.2)', // צל חזק יותר
+  '&:hover': {
+    backgroundColor: '#666', // צבע כהה יותר בהובר
+  },
+});
+// ============================================
 const AddRecipeForm = () => {
   const { user } = useUser(); // שימוש בפונקציה הבטוחה
   const navigate = useNavigate();
   // נניח שהמשתמש מחובר ויש לנו את ה־UserId
-  const userId =user.Id
+  const userId = user.Id
   const {
     register,
     handleSubmit,
@@ -99,7 +129,7 @@ const AddRecipeForm = () => {
       Img: data.img,
       Ingridents: mappedIngredients,
     }
-  
+
     try {
       const response = await axios.post("http://localhost:8080/api/recipe", payload);
       console.log("✅ מתכון נוסף בהצלחה:", response.data);
@@ -233,7 +263,7 @@ const AddRecipeForm = () => {
                     fullWidth
                     {...register(`ingredients.${index}.type`)}
                     error={!!errors.ingredients?.[index]?.type}
-                    // helperText={errors.ingredients?.[index]?.type?.message}
+                  // helperText={errors.ingredients?.[index]?.type?.message}
                   />
                 </Grid>
                 <Grid item xs={2}>
@@ -243,21 +273,25 @@ const AddRecipeForm = () => {
                 </Grid>
               </Grid>
             ))}
-            {/* כפתור להוספת מרכיב */}
+            {/* כפתור הוספת מרכיב */}
             <Grid item xs={12}>
-              <Button
+              <CustomButton
                 onClick={() => append({ name: "", count: "", type: "" })}
                 startIcon={<AddIcon />}
-                variant="contained"
+                sx={{ width: '40%' }} // גודל מותאם אישית
               >
                 הוסף מרכיב
-              </Button>
+              </CustomButton>
             </Grid>
-            {/* כפתור שליחה */}
+
+            {/* כפתור הוספת מתכון */}
             <Grid item xs={12}>
-              <Button type="submit" variant="contained" color="primary" fullWidth>
+              <CustomButton
+                type="submit"
+                sx={{ width: '100%' }} // שיהיה רחב כמו קודם
+              >
                 הוסף מתכון
-              </Button>
+              </CustomButton>
             </Grid>
           </Grid>
         </form>

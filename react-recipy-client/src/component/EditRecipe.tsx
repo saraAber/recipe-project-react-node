@@ -13,6 +13,7 @@ import {
   IconButton,
   FormControl,
   InputLabel,
+  styled,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -58,6 +59,36 @@ type FormValues = {
     type: string;
   }>;
 };
+// ============================================
+// עיצוב מותאם אישית לשדות הטופס
+const CustomTextField = styled(TextField)({
+  width: '100%',
+  marginBottom: '20px', // רווח בין השדות
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: '#444', // קו מיתאר אפור כהה יותר
+    },
+    '&:hover fieldset': {
+      borderColor: '#444', // קו מיתאר אפור כהה יותר בהובר
+    },
+  },
+  '& .MuiInputLabel-root': {
+    color: '#444', // צבע האותיות של הלייבל אפור כהה יותר
+  }
+});
+
+// עיצוב מותאם אישית לכפתור
+const CustomButton = styled(Button)({
+  backgroundColor: '#444', // צבע רקע אפור כהה
+  color: 'white', // צבע הטקסט
+  padding: '10px 0', // רווח פנימי
+  borderRadius: '8px', // פינות מעוגלות
+  boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.2)', // צל חזק יותר
+  '&:hover': {
+    backgroundColor: '#666', // צבע כהה יותר בהובר
+  },
+});
+// ============================================
 
 const EditRecipe = () => {
   const { id } = useParams(); // שליפת ה-id מתוך ה-URL
@@ -145,7 +176,7 @@ const EditRecipe = () => {
     <Card sx={{ maxWidth: 600, margin: "auto", mt: 4, p: 2 }}>
       <CardContent>
         <Typography variant="h5" gutterBottom>
-          עריכת מתכון
+          עריכת מתכון 🖊 
         </Typography>
         <form onSubmit={handleSubmit((data) => {
           console.log("Submitting...", data);
@@ -154,7 +185,7 @@ const EditRecipe = () => {
           <Grid container spacing={2}>
             {/* שם המתכון */}
             <Grid item xs={12}>
-              <TextField
+              <CustomTextField
                 label="שם המתכון"
                 fullWidth
                 {...register("name")}
@@ -162,9 +193,10 @@ const EditRecipe = () => {
                 helperText={errors.name?.message}
               />
             </Grid>
+
             {/* הוראות הכנה */}
             <Grid item xs={12}>
-              <TextField
+              <CustomTextField
                 label="הוראות הכנה"
                 fullWidth
                 multiline
@@ -174,6 +206,7 @@ const EditRecipe = () => {
                 helperText={errors.instructions?.message}
               />
             </Grid>
+
             {/* רמת קושי */}
             <Grid item xs={6}>
               <FormControl fullWidth error={!!errors.difficulty}>
@@ -183,7 +216,6 @@ const EditRecipe = () => {
                   label="רמת הקושי"
                   defaultValue=""
                   {...register("difficulty")}
-                // value={watch("difficulty") || ""}
                 >
                   <MenuItem value="קל">קל</MenuItem>
                   <MenuItem value="בינוני">בינוני</MenuItem>
@@ -197,9 +229,10 @@ const EditRecipe = () => {
                 </Typography>
               )}
             </Grid>
+
             {/* זמן הכנה */}
             <Grid item xs={6}>
-              <TextField
+              <CustomTextField
                 label="זמן הכנה (דקות)"
                 type="number"
                 fullWidth
@@ -208,9 +241,10 @@ const EditRecipe = () => {
                 helperText={errors.duration?.message}
               />
             </Grid>
+
             {/* תיאור קצר */}
             <Grid item xs={12}>
-              <TextField
+              <CustomTextField
                 label="תיאור קצר"
                 fullWidth
                 {...register("description")}
@@ -218,9 +252,10 @@ const EditRecipe = () => {
                 helperText={errors.description?.message}
               />
             </Grid>
+
             {/* קישור לתמונה */}
             <Grid item xs={12}>
-              <TextField
+              <CustomTextField
                 label="קישור לתמונה"
                 fullWidth
                 {...register("img")}
@@ -228,12 +263,14 @@ const EditRecipe = () => {
                 helperText={errors.img?.message}
               />
             </Grid>
+
             {/* כותרת קבוצת מרכיבים */}
             <Grid item xs={12}>
               <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
                 מרכיבים
               </Typography>
             </Grid>
+
             {/* מרכיבים – דינמיים */}
             {fields.map((item, index) => (
               <Grid
@@ -244,7 +281,7 @@ const EditRecipe = () => {
                 sx={{ mb: 1 }}
               >
                 <Grid item xs={4}>
-                  <TextField
+                  <CustomTextField
                     label="שם מוצר"
                     fullWidth
                     {...register(`ingredients.${index}.name`)}
@@ -253,7 +290,7 @@ const EditRecipe = () => {
                   />
                 </Grid>
                 <Grid item xs={3}>
-                  <TextField
+                  <CustomTextField
                     label="כמות"
                     fullWidth
                     {...register(`ingredients.${index}.count`)}
@@ -262,12 +299,11 @@ const EditRecipe = () => {
                   />
                 </Grid>
                 <Grid item xs={3}>
-                  <TextField
+                  <CustomTextField
                     label="סוג כמות"
                     fullWidth
                     {...register(`ingredients.${index}.type`)}
                     error={!!errors.ingredients?.[index]?.type}
-                  // helperText={errors.ingredients?.[index]?.type?.message}
                   />
                 </Grid>
                 <Grid item xs={2}>
@@ -277,29 +313,30 @@ const EditRecipe = () => {
                 </Grid>
               </Grid>
             ))}
+
             {/* כפתור להוספת מרכיב */}
             <Grid item xs={12}>
-              <Button
-                onClick={() => append({ name: "", count: "", type: "" })}
-                startIcon={<AddIcon />}
-                variant="contained"
-              >
-                הוסף מרכיב
-              </Button>
+              <Grid item xs={12}>
+                <CustomButton
+                  onClick={() => append({ name: "", count: "", type: "" })}
+                  startIcon={<AddIcon />}
+                  sx={{ mt: 0, width: '40%' }} // גודל מותאם אישית
+                >
+                  הוסף מרכיב
+                </CustomButton>
+              </Grid>
             </Grid>
+
             {/* כפתור שליחה */}
             <Grid item xs={12}>
-              <Button type="submit" variant="contained" color="primary" fullWidth>
-                עדכן מתכון
-              </Button>
-
+              <CustomButton type="submit" fullWidth sx={{ mt: 1, width: '70%' }}>
+              ✔  עדכן מתכון 
+              </CustomButton>
             </Grid>
           </Grid>
         </form>
-
       </CardContent>
     </Card>
-  )
-
+  );
 }
 export default EditRecipe
