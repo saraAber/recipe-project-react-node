@@ -2,7 +2,6 @@ const { LoginDb, SighinDb } = require("../reposetory/user");
 
 const Login = (req, res) => {
     const { UserName, Password } = req.body;
-    console.log(UserName,Password);
 
     LoginDb(UserName, Password)
         .then(findUser => {
@@ -22,8 +21,8 @@ const Login = (req, res) => {
 
 const Sighin = (req, res) => {
     const { UserName, Password, Name, Phone, Email, Tz } = req.body;
-    
-    console.log('Received data:', { UserName, Password, Name, Phone, Email, Tz });
+
+    // console.log('Received data:', { UserName, Password, Name, Phone, Email, Tz });
 
     if (!UserName || !Name || !Password || !Phone || !Email || !Tz) {
         // לא נשלח מידע

@@ -27,7 +27,8 @@ const AddRecipy = (req, res) => {
     const {
         Name, UserId, CategoryId, Img, Duration, Difficulty, Description,
         Ingridents, Instructions } = req.body;
-    console.log(Name, UserId, CategoryId, Img, Duration, Difficulty, Description, Ingridents, Instructions);
+
+    // console.log(Name, UserId, CategoryId, Img, Duration, Difficulty, Description, Ingridents, Instructions);
 
     if (!Name || !UserId || !CategoryId || !Img || !Duration || !Difficulty || !Description || !Ingridents || !Instructions) {
         // לא נשלח מידע
@@ -49,19 +50,30 @@ const AddRecipy = (req, res) => {
 }
 
 const EditRecipy = (req, res) => {
+    // console.log("in edit ",req.body.Name,"++++++-----");
+    // console.log( "----------",Id,
+        // Name, UserId, CategoryId, Img, Duration, Difficulty, Description,
+        // Ingridents, Instructions);
+    
     const { Id,
         Name, UserId, CategoryId, Img, Duration, Difficulty, Description,
         Ingridents, Instructions } = req.body;
+        console.log("Edit");
+        
+        console.log("----------", Id, Name, UserId, CategoryId, Img, Duration, Difficulty, Description, Ingridents, Instructions);
 
     if (!Id || !Name || !UserId || !CategoryId || !Img || !Duration || !Difficulty || !Description || !Ingridents || !Instructions) {
         // לא נשלח מידע
-        return res.status(400).send('המידע שנשלח לא תקין')
+        return res.status(400).send('‼ 😫 המידע שנשלח לא תקין',Id,
+                 Name, UserId, CategoryId, Img, Duration, Difficulty, Description,
+                 Ingridents, Instructions)
     };
 
     const updateRecipe = {
         Id, Name, CategoryId, Img, Duration, Difficulty,
         Description, Ingridents, Instructions
     };
+
     EditRecipyDb(updateRecipe)
         .then(x => res.send(x))
         .catch(err => {
@@ -85,4 +97,5 @@ const Delete = (req, res) => {
 
         })
 }
+
 module.exports = { Delete, EditRecipy, AddRecipy, GetAllRecipe, GetRecipe };

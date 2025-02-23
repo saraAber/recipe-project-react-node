@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import React, { use, useContext, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import {
@@ -23,23 +23,6 @@ import { UserContext, useUser } from "../use-Context/userProvider"
 import { Ingrident } from "../moduls/Ingrident";
 import { useEffect } from "react";
 import { Rec } from "../moduls/Recipe";
-
-// =====================
-// const recipe = {
-//   name: "פסטה ברוטב עגבניות",
-//   instructions: "לבשל את הפסטה במים רותחים עם מלח למשך 10 דקות. להוסיף רוטב עגבניות ולערבב היטב.",
-//   difficulty: "בינוני",
-//   duration: 30,
-//   description: "פסטה קלה ומהירה להכנה עם רוטב עגבניות עשיר.",
-//   img: "https://example.com/pasta.jpg",
-//   ingredients: [
-//     { name: "פסטה", count: "200", type: "גרם" },
-//     { name: "רוטב עגבניות", count: "1", type: "כוס" },
-//     { name: "מלח", count: "1", type: "כפית" },
-//   ],
-// };
-// ========================
-
 const recipeSchema = Yup.object().shape({
   name: Yup.string().required("שם המתכון חובה"),
   instructions: Yup.string().required("הוראות הכנה חובה"),
@@ -77,6 +60,8 @@ type FormValues = {
 };
 
 const EditRecipe = () => {
+  const { id } = useParams(); // שליפת ה-id מתוך ה-URL
+  console.log("Recipe ID:", id); // לבדיקה
   const location = useLocation();
   const r = location.state?.recipe as Rec; // המרת הנתונים לאובייקט מסוג Rec
   const recipe =
@@ -88,15 +73,12 @@ const EditRecipe = () => {
     description: r.Description,
     img: r.Img,
     // מיפוי המערך כדי למלא את ה-ingredients
-    ingredients: r.Ingridents?.map((ing:Ingrident) => ({
+    ingredients: r.Ingridents?.map((ing: Ingrident) => ({
       name: ing.Name || "",     // שם המוצר
       count: ing.Count || "",   // כמות המוצר
       type: ing.Type || "",     // סוג הכמות
     }))
   }
-  const { user } = useUser(); // שימוש בפונקציה הבטוחה
-  // נניח שהמשתמש מחובר ויש לנו את ה־UserId
-  const userId = user.Id // לדוגמה
   const {
     register,
     handleSubmit,
@@ -106,11 +88,15 @@ const EditRecipe = () => {
   } = useForm<FormValues>({
     resolver: yupResolver(recipeSchema),
   });
-
   const { fields, append, remove } = useFieldArray({
     control,
     name: "ingredients",
   });
+
+  // ================================
+  const { user } = useUser(); // שימוש בפונקציה הבטוחה
+  const userId = user?.Id // לדוגמה
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (recipe) {
@@ -121,7 +107,7 @@ const EditRecipe = () => {
       setValue("img", recipe.img || "");
       setValue("ingredients", recipe.ingredients || [{ name: "", count: "", type: "" }]);
     }
-  }, [recipe, setValue]); // התלות כאן היא ב-recipe וב-setValue
+  }, []); //במה תהיה התלות?
 
   const onSubmit = async (data: FormValues) => {
     // מיפוי המרכיבים כך שהשדות יהיו בשמות שהשרת מצפה להם
@@ -130,11 +116,10 @@ const EditRecipe = () => {
       Count: item.count, // במקום "count"
       Type: item.type,   // במקום "type"
     }))
-
-    // מיפוי השדות כך שיתאימו לשמות שהשרת מצפה להם
     const payload = {
+      Id: id,
       Name: data.name,
-      UserId: userId,
+      UserId: user.Id,
       Instructions: { Name: data.instructions },
       Difficulty: data.difficulty,
       Duration: data.duration,
@@ -143,10 +128,14 @@ const EditRecipe = () => {
       Img: data.img,
       Ingridents: mappedIngredients,
     }
+    console.log("out");
 
     try {
+      console.log("try in");
+
       const response = await axios.post("http://localhost:8080/api/recipe/edit", payload);
       console.log("✅ המתכון עודכן בהצלחה:", response.data);
+      navigate('/home')
     } catch (error) {
       console.error("❌ שגיאת שרת", error);
     }
@@ -158,7 +147,10 @@ const EditRecipe = () => {
         <Typography variant="h5" gutterBottom>
           עריכת מתכון
         </Typography>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit((data) => {
+          console.log("Submitting...", data);
+          onSubmit(data);
+        })}>
           <Grid container spacing={2}>
             {/* שם המתכון */}
             <Grid item xs={12}>
@@ -191,6 +183,7 @@ const EditRecipe = () => {
                   label="רמת הקושי"
                   defaultValue=""
                   {...register("difficulty")}
+                // value={watch("difficulty") || ""}
                 >
                   <MenuItem value="קל">קל</MenuItem>
                   <MenuItem value="בינוני">בינוני</MenuItem>
@@ -297,11 +290,13 @@ const EditRecipe = () => {
             {/* כפתור שליחה */}
             <Grid item xs={12}>
               <Button type="submit" variant="contained" color="primary" fullWidth>
-                הוסף מתכון
+                עדכן מתכון
               </Button>
+
             </Grid>
           </Grid>
         </form>
+
       </CardContent>
     </Card>
   )
