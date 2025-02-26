@@ -323,7 +323,7 @@ const EditRecipe = () => {
                 sx={{ width: '100%' }}
               >
               ✔  עדכן מתכון
-              </CustomButton>
+              </CustomButton >
             </Grid>
           </Grid>
         </form>

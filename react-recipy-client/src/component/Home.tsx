@@ -5,9 +5,10 @@ import AddRecipe from "./AddRecipe"
 import EditRecipe from "./EditRecipe"
 import { AppBar, Toolbar, Typography, Button, Avatar, Box } from '@mui/material';
 import { use, useContext, useEffect, useState } from "react"
-import Test1 from "./test1"
+import Test1 from "./Search"
 import { useCategories } from "../use-context/categoryProvider"
 import axios from "axios"
+import Search from "./Search"
 
 const Home = () => {
 
@@ -25,33 +26,37 @@ const Home = () => {
     }, [user]);
 
     const fetchCategories = async () => {
-        try {    
-          const response = await axios.get("http://localhost:8080/api/category");
-          setCategories(response.data);
-          console.log("✅ קטגוריות נטענו בהצלחה:", response.data);
-    
-        } catch (error) {
-          console.error("Error fetching categories:", error);
-        }
-      };
+        try {
+            const response = await axios.get("http://localhost:8080/api/category");
+            setCategories(response.data);
+            console.log("✅ קטגוריות נטענו בהצלחה:", response.data);
 
-      useEffect(() => {//====
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+        }
+    };
+
+    useEffect(() => {//====
         fetchCategories();
-      }, []);
-      
+    }, []);
+
     return (
         <>
             <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 20px" }}>
 
                 <div style={{ display: "flex", gap: "15px" }}>
+                    {!(user?.Id != undefined && showAddRecipe) &&
 
-                    <Link to="login">
-                        <Button sx={{ color: "#333" }}>Login</Button>
-                    </Link>
+                        <Link to="login">
+                            <Button sx={{ color: "#333" }}>Login</Button>
+                        </Link>
+                    }
+                    {!(user?.Id != undefined && showAddRecipe) &&
+                        <Link to="sighnin">
+                            <Button sx={{ color: "#333" }}>Sign Up</Button>
+                        </Link>
+                    }
 
-                    <Link to="sighnin">
-                        <Button sx={{ color: "#333" }}>Sign Up</Button>
-                    </Link>
 
                     {user?.Id != undefined && showAddRecipe && ( // מציג רק אם המשתמש מחובר
                         <Link to="addRecipe">
@@ -63,6 +68,7 @@ const Home = () => {
                             </Button>
                         </Link>
                     )}
+                    
                 </div>
 
                 <Box sx={{ display: "flex", alignItems: "center", paddingRight: "10%" }}>
@@ -70,11 +76,11 @@ const Home = () => {
                         {user?.Name?.charAt(0).toUpperCase() || "❔"}
                     </Avatar>
                 </Box>
-                
+
             </header>
             <Outlet />
             <h1>Recipe in a Click</h1>
-            <Test1></Test1>
+            <Search></Search>
             <Recipe />
             <h4>© by tehils shinfeld</h4>
         </>

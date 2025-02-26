@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { TextField, MenuItem, Select, FormControl, InputLabel, Button, Box, Paper, Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useRecipes } from "../use-context/recipesProvider";
+import { useCategories } from "../use-context/categoryProvider";
 
 const categories = [
     { id: 1, name: "חלבי" },
@@ -15,21 +16,17 @@ const difficulties = [
     { id: 3, name: "קשה" },
 ];
 
-const Test1 = () => {
+const Search = () => {
+      const { categories, setCategories } = useCategories();
     const [filterType, setFilterType] = useState(""); // סוג הסינון שנבחר
     const [filterValue, setFilterValue] = useState(""); // הערך שנבחר לסינון
     const [openSearch, setOpenSearch] = useState(false); // מציין אם התיבה פתוחה או סגורה
-  const { recipes, setRecipes } = useRecipes();
+    const { recipes, setRecipes } = useRecipes();
 
     const filterRecipes = () => {
         return recipes.filter((recipe) => {
-            // if (filterType === "category" && filterValue) {
-            //     return recipe.Category === Number(filterValue);
-            // }
-            console.log(recipe?.Difficulty ,filterValue);
-            
             if (filterType === "difficulty" && filterValue) {
-                return String(recipe?.Difficulty)=== String(filterValue);
+                return String(recipe?.Difficulty) === String(filterValue);
             }
             if (filterType === "duration" && filterValue) {
                 return recipe?.Duration <= Number(filterValue);
@@ -44,8 +41,7 @@ const Test1 = () => {
     const handleSearch = () => {
         const filteredRecipes = filterRecipes();
         setRecipes(filteredRecipes);
-        filteredRecipes.length === 0 &&alert("לא נמצאו מתכונים מתאימים לחיפוש");
-        
+        filteredRecipes.length === 0 && alert("לא נמצאו מתכונים מתאימים לחיפוש") ;
         console.log("מתכונים מפולטרים:", filteredRecipes);
     };
 
@@ -60,19 +56,25 @@ const Test1 = () => {
                     fontWeight: "bold",
                     borderRadius: 2,
                     transition: "0.3s",
-                    "&:hover": { backgroundColor: "#444", color: "#fff" },
-                    borderColor: "#444", // אפור כהה
+                    "&:hover": { backgroundColor: "#fff", color: "#444" },
+                    borderColor: "#444", 
+                    backgroundColor: "#444",
+                    color: "#fff"
                 }}
             >
-                {openSearch ? "סגור חיפוש" : "אפשר חיפוש"}
+                {openSearch ? "סגור חיפוש" : "🔍 חיפוש"}
             </Button>
             {openSearch && (
-                <Paper elevation={3} sx={{ padding: 3, borderRadius: 3, backgroundColor: "#f5f5f5", maxWidth: 400, mx: "auto" }}>
+                <Paper elevation={3} sx={{ padding: 3, borderRadius: 3, backgroundColor: "#fff", maxWidth: 400, mx: "auto" }}>
                     <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold", textAlign: "center" }}>🔎 חיפוש מתכונים</Typography>
 
                     <FormControl fullWidth sx={{ mb: 2 }}>
-                        <InputLabel>בחר סינון</InputLabel>
-                        <Select value={filterType} onChange={(e) => { setFilterType(e.target.value); setFilterValue(""); }}>
+                        <InputLabel sx={{ color: "#444" }}>בחר סינון</InputLabel>
+                        <Select
+                            value={filterType}
+                            onChange={(e) => { setFilterType(e.target.value); setFilterValue(""); }}
+                            sx={{ "& .MuiSelect-select": { color: "#444" }, "& .MuiOutlinedInput-root": { "& fieldset": { borderColor: "#444" } } }}
+                        >
                             <MenuItem value="category">קטגוריה</MenuItem>
                             <MenuItem value="duration">משך זמן</MenuItem>
                             <MenuItem value="difficulty">רמת קושי</MenuItem>
@@ -82,10 +84,14 @@ const Test1 = () => {
 
                     {filterType === "category" && (
                         <FormControl fullWidth sx={{ mb: 2 }}>
-                            <InputLabel>בחר קטגוריה</InputLabel>
-                            <Select value={filterValue} onChange={(e) => setFilterValue(e.target.value)}>
+                            <InputLabel sx={{ color: "#444" }}>בחר קטגוריה</InputLabel>
+                            <Select
+                                value={filterValue}
+                                onChange={(e) => setFilterValue(e.target.value)}
+                                sx={{ "& .MuiSelect-select": { color: "#444" }, "& .MuiOutlinedInput-root": { "& fieldset": { borderColor: "#444" } } }}
+                            >
                                 {categories.map((cat) => (
-                                    <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
+                                    <MenuItem key={cat.Id} value={cat.Id}>{cat.Name}</MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
@@ -93,8 +99,12 @@ const Test1 = () => {
 
                     {filterType === "difficulty" && (
                         <FormControl fullWidth sx={{ mb: 2 }}>
-                            <InputLabel>בחר רמת קושי</InputLabel>
-                            <Select value={filterValue} onChange={(e) => setFilterValue(e.target.value)}>
+                            <InputLabel sx={{ color: "#444" }}>בחר רמת קושי</InputLabel>
+                            <Select
+                                value={filterValue}
+                                onChange={(e) => setFilterValue(e.target.value)}
+                                sx={{ "& .MuiSelect-select": { color: "#444" }, "& .MuiOutlinedInput-root": { "& fieldset": { borderColor: "#444" } } }}
+                            >
                                 {difficulties.map((diff) => (
                                     <MenuItem key={diff.id} value={diff.name}>{diff.name}</MenuItem>
                                 ))}
@@ -108,7 +118,11 @@ const Test1 = () => {
                             label="משך זמן (דקות)"
                             value={filterValue}
                             onChange={(e) => setFilterValue(e.target.value)}
-                            sx={{ mb: 2 }}
+                            sx={{
+                                mb: 2,
+                                "& .MuiInputBase-root": { color: "#444" },
+                                "& .MuiOutlinedInput-root": { "& fieldset": { borderColor: "#444" } }
+                            }}
                         />
                     )}
                     {filterType === "createdBy" && (
@@ -117,7 +131,11 @@ const Test1 = () => {
                             label="שם יוצר המתכון"
                             value={filterValue}
                             onChange={(e) => setFilterValue(e.target.value)}
-                            sx={{ mb: 2 }}
+                            sx={{
+                                mb: 2,
+                                "& .MuiInputBase-root": { color: "#444" },
+                                "& .MuiOutlinedInput-root": { "& fieldset": { borderColor: "#444" } }
+                            }}
                         />
                     )}
                     <Button
@@ -131,8 +149,8 @@ const Test1 = () => {
                             fontWeight: "bold",
                             borderRadius: 2,
                             transition: "0.3s",
-                            backgroundColor: "#444", // אפור כהה
-                            "&:hover": { backgroundColor: "#333" }, // גוון כהה יותר בהובר
+                            backgroundColor: "#333", 
+                            "&:hover": { backgroundColor: "#333" }, 
                             "&:disabled": { backgroundColor: "#ccc" },
                         }}
                     >
@@ -144,4 +162,4 @@ const Test1 = () => {
     );
 };
 
-export default Test1;
+export default Search;

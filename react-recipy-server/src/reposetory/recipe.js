@@ -19,10 +19,7 @@ const AddRecipyDB = async (recipy) => {
 
 const EditRecipyDb = async (recipe) => {
     const recipeUpdate = await GetRecipeDb(recipe.Id)
-    console.log("00000000000000000000000");
-    
-    console.log(recipe);
-    
+        
     return recipeUpdate.update(recipe)
 }
 

@@ -39,6 +39,8 @@ const AddRecipy = (req, res) => {
         Name, UserId, CategoryId, Img, Duration, Difficulty, Description,
         Ingridents, Instructions
     };
+    console.log("newRecipe", newRecipe);
+    
     AddRecipyDB(newRecipe)
         .then(x => res.send(x))
         .catch(err => {
