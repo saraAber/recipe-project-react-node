@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { TextField, Button, Grid, styled } from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { User } from "../moduls/user";
-import { UserContext, useUser } from "../use-Context/userProvider";
+import { UserContext, useUser } from "../use-context/userProvider";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -20,45 +20,42 @@ const validationSchema = Yup.object({
 // ============================================
 // עיצוב מותאם אישית לשדות הטופס
 const CustomTextField = styled(TextField)({
-    width: '60%', // רוחב גדול יותר (70%)
-    marginBottom: '20px', // רווח בין השדות
+    width: '60%',
+    marginBottom: '20px', 
     '& .MuiOutlinedInput-root': {
         '& fieldset': {
-            borderColor: '#444', // קו מיתאר אפור כהה יותר
+            borderColor: '#444', 
         },
         '&:hover fieldset': {
-            borderColor: '#444', // קו מיתאר אפור כהה יותר בהובר
+            borderColor: '#444', 
         },
     },
     '& .MuiInputLabel-root': {
-        color: '#444', // צבע האותיות של הלייבל אפור כהה יותר
+        color: '#444', 
     }
 });
 
-// עיצוב מותאם אישית לכפתור
 const CustomButton = styled(Button)({
-    width: '60%', // כפתור ברוחב 70%
-    backgroundColor: '#444', // צבע רקע אפור כהה
-    color: 'white', // צבע הטקסט
-    padding: '10px 0', // רווח פנימי
-    borderRadius: '8px', // פינות מעוגלות
-    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.2)', // צל חזק יותר
+    width: '60%', 
+    backgroundColor: '#444', 
+    color: 'white', 
+    padding: '10px 0',
+    borderRadius: '8px', 
+    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.2)', 
     '&:hover': {
-        backgroundColor: '#666', // צבע כהה יותר בהובר
+        backgroundColor: '#666', 
     },
 });
 // ============================================
 
 const Login = () => {
-    const { setUser, user } = useUser(); // שימוש בפונקציה הבטוחה
+    const { setUser, user } = useUser(); 
     const navigate = useNavigate();
 
-    // שליפת הפונקציות והערכים מ-useForm
     const { register, handleSubmit, formState: { errors } } = useForm<SignInData>({
         resolver: yupResolver(validationSchema),
     });
 
-    // פונקציה לשליחה
     const onSubmit = (data: SignInData) => {
         logIn(data);
     };
@@ -91,7 +88,7 @@ const Login = () => {
                     Email: response.data.Email,
                     Tz: response.data.Tz
                 });
-                navigate('/home');  // ניווט לאחר ההתחברות
+                // navigate('/home');  
             } else {
                 console.error("No data found in response");
             }
@@ -113,9 +110,6 @@ const Login = () => {
             return null;
         }
     };
-    useEffect(() => {
-        console.log("User updated:", user); // התעדכן ב-user
-    }, [user]);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>

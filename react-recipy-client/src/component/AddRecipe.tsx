@@ -1,66 +1,53 @@
-import React, { use, useContext, useState } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
-import {
-  TextField,
-  Button,
-  Grid,
-  Card,
-  CardContent,
-  Typography,
-  Select,
-  MenuItem,
-  IconButton,
-  FormControl,
-  InputLabel,
-  styled,
-} from "@mui/material";
+import React, { use, useContext, useEffect, useState } from "react";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { TextField, Button, Grid, Card, CardContent, Typography, Select, MenuItem, IconButton, FormControl, InputLabel, styled } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import axios from "axios";
-import { UserContext, useUser } from "../use-Context/userProvider";
+import {  useUser } from "../use-context/userProvider";
 import { useNavigate } from "react-router-dom";
-
+import { useCategories } from "../use-context/categoryProvider";
 const recipeSchema = Yup.object().shape({
-
-  name: Yup.string().required("שם המתכון חובה"),
-  instructions: Yup.string().required("הוראות הכנה חובה"),
-  difficulty: Yup.string().required("רמת קושי חובה"),
-  duration: Yup.number()
+  Name: Yup.string().required("שם המתכון חובה"),
+  Instructions: Yup.string().required("הוראות הכנה חובה"),
+  Difficulty: Yup.string().required("רמת קושי חובה"),
+  Duration: Yup.number()
     .required("זמן הכנה חובה")
     .positive("הזמן חייב להיות חיובי"),
-  description: Yup.string().required("תיאור חובה"),
-  img: Yup.string()
+  Description: Yup.string().required("תיאור חובה"),
+  Category : Yup.string().required("קטגוריה חובה"),
+  Img: Yup.string()
     .url("כתובת תמונה לא תקינה")
     .required("קישור לתמונה חובה"),
-  ingredients: Yup.array()
+  Ingredients: Yup.array()
     .of(
       Yup.object().shape({
-        name: Yup.string().required("שם מוצר חובה"),
-        count: Yup.string().required("כמות חובה"),
-        type: Yup.string().required("סוג כמות חובה"),
+        Name: Yup.string().required("שם מוצר חובה"),
+        Count: Yup.string().required("כמות חובה"),
+        Type: Yup.string().required("סוג כמות חובה"),
       })
     )
     .required("יש להזין לפחות מרכיב אחד")
     .min(1, "יש להזין לפחות מרכיב אחד"),
 });
-
+// =====================אוביקט שהוספתי כך היה לי נוח יותר למדל את הטופס=========================
 type FormValues = {
-  name: string;
-  instructions: string;
-  difficulty: string;
-  duration: number;
-  description: string;
-  img: string;
-  ingredients: Array<{
-    name: string;
-    count: string;
-    type: string;
+  Name: string;
+  Instructions: string;
+  Difficulty: string;
+  Duration: number;
+  Description: string;
+  Category: string;
+  Img: string;
+  Ingredients: Array<{
+    Name: string;
+    Count: string;
+    Type: string;
   }>;
 };
-// ============================================
-// עיצוב מותאם אישית לשדות הטופס
+// =================עיצוב שהוספתי על "אמ יו אי" לשדות והכפתורים של הטופס===========================
 const CustomTextField = styled(TextField)({
   width: '100%',
   marginBottom: '20px', // רווח בין השדות
@@ -77,7 +64,6 @@ const CustomTextField = styled(TextField)({
   }
 });
 
-// עיצוב מותאם אישית לכפתור
 const CustomButton = styled(Button)({
   backgroundColor: '#444', // צבע רקע אפור כהה
   color: 'white', // צבע הטקסט
@@ -90,10 +76,12 @@ const CustomButton = styled(Button)({
 });
 // ============================================
 const AddRecipeForm = () => {
-  const { user } = useUser(); // שימוש בפונקציה הבטוחה
+
+  const { user } = useUser();
   const navigate = useNavigate();
-  // נניח שהמשתמש מחובר ויש לנו את ה־UserId
   const userId = user.Id
+  const { categories, setCategories } = useCategories();
+
   const {
     register,
     handleSubmit,
@@ -102,31 +90,40 @@ const AddRecipeForm = () => {
   } = useForm<FormValues>({
     resolver: yupResolver(recipeSchema),
     defaultValues: {
-      ingredients: [{ name: "", count: "", type: "" }],
+      Name: "",
+      Instructions: "",
+      Difficulty: "",
+      Duration: 0,
+      Description: "",
+      Category: "",
+      Img: "",
+      Ingredients: [{ Name: "", Count: "", Type: "" }],
     },
   });
+
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "ingredients",
+    name: "Ingredients",
   });
 
+
+
   const onSubmit = async (data: FormValues) => {
-    // מיפוי המרכיבים כך שהשדות יהיו בשמות שהשרת מצפה להם
-    const mappedIngredients = data.ingredients.map((item) => ({
-      Name: item.name,  // במקום "name"
-      Count: item.count, // במקום "count"
-      Type: item.type,   // במקום "type"
+    const mappedIngredients = data.Ingredients.map((item) => ({
+      Name: item.Name,
+      Count: item.Count,
+      Type: item.Type,
     }))
-    // מיפוי השדות כך שיתאימו לשמות שהשרת מצפה להם
+
     const payload = {
-      Name: data.name,
+      Name: data.Name,
       UserId: userId,
-      Instructions: { Name: data.instructions },
-      Difficulty: data.difficulty,
-      Duration: data.duration,
-      Description: data.description,
-      CategoryId: 12, // לא צריך להיתיחס לקטגוריה
-      Img: data.img,
+      Instructions: [{ Name: data.Instructions }],
+      Difficulty: data.Difficulty,
+      Duration: data.Duration,
+      Description: data.Description,
+      CategoryId: Number(data.Category),
+      Img: data.Img,
       Ingridents: mappedIngredients,
     }
 
@@ -154,9 +151,9 @@ const AddRecipeForm = () => {
               <TextField
                 label="שם המתכון"
                 fullWidth
-                {...register("name")}
-                error={!!errors.name}
-                helperText={errors.name?.message}
+                {...register("Name")}
+                error={!!errors.Name}
+                helperText={errors.Name?.message}
               />
             </Grid>
             {/* הוראות הכנה */}
@@ -166,20 +163,20 @@ const AddRecipeForm = () => {
                 fullWidth
                 multiline
                 rows={3}
-                {...register("instructions")}
-                error={!!errors.instructions}
-                helperText={errors.instructions?.message}
+                {...register("Instructions")}
+                error={!!errors.Instructions}
+                helperText={errors.Instructions?.message}
               />
             </Grid>
             {/* רמת קושי */}
             <Grid item xs={6}>
-              <FormControl fullWidth error={!!errors.difficulty}>
+              <FormControl fullWidth error={!!errors.Difficulty}>
                 <InputLabel id="difficulty-label">רמת הקושי</InputLabel>
                 <Select
                   labelId="difficulty-label"
                   label="רמת הקושי"
                   defaultValue=""
-                  {...register("difficulty")}
+                  {...register("Difficulty")}
                 >
                   <MenuItem value="קל">קל</MenuItem>
                   <MenuItem value="בינוני">בינוני</MenuItem>
@@ -187,9 +184,9 @@ const AddRecipeForm = () => {
                   <MenuItem value="מיטיבי לכת">מיטיבי לכת</MenuItem>
                 </Select>
               </FormControl>
-              {errors.difficulty && (
+              {errors.Difficulty && (
                 <Typography variant="caption" color="error">
-                  {errors.difficulty.message}
+                  {errors.Difficulty.message}
                 </Typography>
               )}
             </Grid>
@@ -199,9 +196,9 @@ const AddRecipeForm = () => {
                 label="זמן הכנה (דקות)"
                 type="number"
                 fullWidth
-                {...register("duration")}
-                error={!!errors.duration}
-                helperText={errors.duration?.message}
+                {...register("Duration")}
+                error={!!errors.Duration}
+                helperText={errors.Duration?.message}
               />
             </Grid>
             {/* תיאור קצר */}
@@ -209,19 +206,42 @@ const AddRecipeForm = () => {
               <TextField
                 label="תיאור קצר"
                 fullWidth
-                {...register("description")}
-                error={!!errors.description}
-                helperText={errors.description?.message}
+                {...register("Description")}
+                error={!!errors.Description}
+                helperText={errors.Description?.message}
               />
+            </Grid>
+            {/* קטגוריה - דרופדאון */}
+            <Grid item xs={12}>
+              <FormControl fullWidth error={!!errors.Category}>
+                <InputLabel id="category-label">קטגוריה</InputLabel>
+                <Controller
+                  name="Category" 
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      labelId="category-label"
+                      label="קטגוריה"
+                    >
+                      {categories.map((category) => (
+                        <MenuItem key={category.Id} value={category.Id}>
+                          {category.Name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  )}
+                />
+              </FormControl>
             </Grid>
             {/* קישור לתמונה */}
             <Grid item xs={12}>
               <TextField
                 label="קישור לתמונה"
                 fullWidth
-                {...register("img")}
-                error={!!errors.img}
-                helperText={errors.img?.message}
+                {...register("Img")}
+                error={!!errors.Img}
+                helperText={errors.Img?.message}
               />
             </Grid>
             {/* כותרת קבוצת מרכיבים */}
@@ -243,26 +263,26 @@ const AddRecipeForm = () => {
                   <TextField
                     label="שם מוצר"
                     fullWidth
-                    {...register(`ingredients.${index}.name`)}
-                    error={!!errors.ingredients?.[index]?.name}
-                    helperText={errors.ingredients?.[index]?.name?.message}
+                    {...register(`Ingredients.${index}.Name`)}
+                    error={!!errors.Ingredients?.[index]?.Name}
+                    helperText={errors.Ingredients?.[index]?.Name?.message}
                   />
                 </Grid>
                 <Grid item xs={3}>
                   <TextField
                     label="כמות"
                     fullWidth
-                    {...register(`ingredients.${index}.count`)}
-                    error={!!errors.ingredients?.[index]?.count}
-                    helperText={errors.ingredients?.[index]?.count?.message}
+                    {...register(`Ingredients.${index}.Count`)}
+                    error={!!errors.Ingredients?.[index]?.Count}
+                    helperText={errors.Ingredients?.[index]?.Count?.message}
                   />
                 </Grid>
                 <Grid item xs={3}>
                   <TextField
                     label="סוג כמות"
                     fullWidth
-                    {...register(`ingredients.${index}.type`)}
-                    error={!!errors.ingredients?.[index]?.type}
+                    {...register(`Ingredients.${index}.Type`)}
+                    error={!!errors.Ingredients?.[index]?.type}
                   // helperText={errors.ingredients?.[index]?.type?.message}
                   />
                 </Grid>
@@ -276,7 +296,7 @@ const AddRecipeForm = () => {
             {/* כפתור הוספת מרכיב */}
             <Grid item xs={12}>
               <CustomButton
-                onClick={() => append({ name: "", count: "", type: "" })}
+                onClick={() => append({ Name: "", Count: "", Type: "" })}
                 startIcon={<AddIcon />}
                 sx={{ width: '40%' }} // גודל מותאם אישית
               >

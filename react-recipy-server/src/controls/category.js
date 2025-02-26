@@ -31,7 +31,4 @@ const AddCategory = (req, res) => {
         })
 }
 
-
-
-
 module.exports = { GetAllCategory, AddCategory };

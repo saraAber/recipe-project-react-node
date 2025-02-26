@@ -8,6 +8,7 @@ const GetAllRecipe = (_req, res) => {
                 return res.status(400).send(err?.errors[0]?.message)
             }
             return res.status(400).send(err)
+
         })
 }
 
@@ -20,6 +21,7 @@ const GetRecipe = (req, res) => {
                 return res.status(400).send(err?.errors[0]?.message)
             }
             return res.status(400).send(err)
+
         })
 }
 
@@ -27,8 +29,6 @@ const AddRecipy = (req, res) => {
     const {
         Name, UserId, CategoryId, Img, Duration, Difficulty, Description,
         Ingridents, Instructions } = req.body;
-
-    // console.log(Name, UserId, CategoryId, Img, Duration, Difficulty, Description, Ingridents, Instructions);
 
     if (!Name || !UserId || !CategoryId || !Img || !Duration || !Difficulty || !Description || !Ingridents || !Instructions) {
         // לא נשלח מידע
@@ -46,33 +46,38 @@ const AddRecipy = (req, res) => {
                 return res.status(400).send(err?.errors[0]?.message)
             }
             return res.status(400).send(err)
+
         })
+
 }
 
 const EditRecipy = (req, res) => {
-    // console.log("in edit ",req.body.Name,"++++++-----");
-    // console.log( "----------",Id,
-        // Name, UserId, CategoryId, Img, Duration, Difficulty, Description,
-        // Ingridents, Instructions);
-    
     const { Id,
         Name, UserId, CategoryId, Img, Duration, Difficulty, Description,
         Ingridents, Instructions } = req.body;
-        console.log("Edit");
-        
-        console.log("----------", Id, Name, UserId, CategoryId, Img, Duration, Difficulty, Description, Ingridents, Instructions);
+
+    console.log(Id,
+        Name, UserId, CategoryId, Img, Duration, Difficulty, Description,
+        Ingridents, Instructions);
+
+
+    console.log(Id,
+        Name, UserId, CategoryId, Img, Duration, Difficulty, Description,
+        Ingridents, Instructions);
+
 
     if (!Id || !Name || !UserId || !CategoryId || !Img || !Duration || !Difficulty || !Description || !Ingridents || !Instructions) {
         // לא נשלח מידע
-        return res.status(400).send('‼ 😫 המידע שנשלח לא תקין',Id,
-                 Name, UserId, CategoryId, Img, Duration, Difficulty, Description,
-                 Ingridents, Instructions)
+        return res.status(400).send('המידע שנשלח לא תקין')
     };
+    // console.log("---------------updateRecipe-----------------");
 
     const updateRecipe = {
         Id, Name, CategoryId, Img, Duration, Difficulty,
         Description, Ingridents, Instructions
     };
+    // console.log(updateRecipe);
+
 
     EditRecipyDb(updateRecipe)
         .then(x => res.send(x))
@@ -83,6 +88,7 @@ const EditRecipy = (req, res) => {
             return res.status(400).send(err)
 
         })
+
 }
 
 const Delete = (req, res) => {

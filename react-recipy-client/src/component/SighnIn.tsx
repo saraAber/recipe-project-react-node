@@ -5,7 +5,7 @@ import { TextField, Button, Grid, InputAdornment, IconButton } from "@mui/materi
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
-import { UserContext, useUser } from "../use-Context/userProvider";
+import { UserContext, useUser } from "../use-context/userProvider";
 import { User } from "../moduls/user";
 import { useNavigate } from "react-router-dom";
 

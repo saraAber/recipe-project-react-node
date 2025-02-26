@@ -8,7 +8,10 @@ import SighnIn from './component/SighnIn.tsx'
 import Home from './component/Home.tsx'
 import AddRecipe from './component/AddRecipe.tsx'
 import EditRecipe from './component/EditRecipe.tsx'
-import UserProvider from './use-Context/userProvider.tsx'
+import UserProvider from './use-context/userProvider.tsx'
+import categoryProvider, { CategoryContext } from './use-context/categoryProvider.tsx'
+import CategoryProvider from './use-context/categoryProvider.tsx'
+import RecipeProvider from './use-context/recipesProvider.tsx'
 
 const routs = createBrowserRouter([
   {
@@ -35,9 +38,18 @@ const routs = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById('root')!).render(
-  <UserProvider>
+  <CategoryProvider>
     <>
-      <RouterProvider router={routs} />,
+      <UserProvider>
+        <>
+          <RecipeProvider>
+            <>
+              <RouterProvider router={routs} />,
+            </>
+          </RecipeProvider>
+        </>
+      </UserProvider>
     </>
-  </UserProvider>
+
+  </CategoryProvider>
 );
