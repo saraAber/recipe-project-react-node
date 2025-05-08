@@ -8,7 +8,6 @@ const GetAllRecipe = (_req, res) => {
                 return res.status(400).send(err?.errors[0]?.message)
             }
             return res.status(400).send(err)
-
         })
 }
 
@@ -27,20 +26,18 @@ const GetRecipe = (req, res) => {
 
 const AddRecipy = (req, res) => {
     const {
-        Name, UserId, CategoryId, Img, Duration, Difficulty, Description,
+        Name, UserId, Categoryid, Img, Duration, Difficulty, Description,
         Ingridents, Instructions } = req.body;
 
-    if (!Name || !UserId || !CategoryId || !Img || !Duration || !Difficulty || !Description || !Ingridents || !Instructions) {
+    if (!Name || !UserId || !Categoryid || !Img || !Duration || !Difficulty || !Description || !Ingridents || !Instructions) {
         // לא נשלח מידע
         return res.status(400).send('המידע שנשלח לא תקין')
     };
 
     const newRecipe = {
-        Name, UserId, CategoryId, Img, Duration, Difficulty, Description,
+        Name, UserId, Categoryid, Img, Duration, Difficulty, Description,
         Ingridents, Instructions
     };
-    console.log("newRecipe", newRecipe);
-    
     AddRecipyDB(newRecipe)
         .then(x => res.send(x))
         .catch(err => {
@@ -48,39 +45,24 @@ const AddRecipy = (req, res) => {
                 return res.status(400).send(err?.errors[0]?.message)
             }
             return res.status(400).send(err)
-
         })
 
 }
 
 const EditRecipy = (req, res) => {
     const { Id,
-        Name, UserId, CategoryId, Img, Duration, Difficulty, Description,
+        Name, UserId, Categoryid, Img, Duration, Difficulty, Description,
         Ingridents, Instructions } = req.body;
 
-    console.log(Id,
-        Name, UserId, CategoryId, Img, Duration, Difficulty, Description,
-        Ingridents, Instructions);
-
-
-    console.log(Id,
-        Name, UserId, CategoryId, Img, Duration, Difficulty, Description,
-        Ingridents, Instructions);
-
-
-    if (!Id || !Name || !UserId || !CategoryId || !Img || !Duration || !Difficulty || !Description || !Ingridents || !Instructions) {
+    if (!Id || !Name || !UserId || !Categoryid || !Img || !Duration || !Difficulty || !Description || !Ingridents || !Instructions) {
         // לא נשלח מידע
         return res.status(400).send('המידע שנשלח לא תקין')
     };
-    // console.log("---------------updateRecipe-----------------");
 
     const updateRecipe = {
-        Id, Name, CategoryId, Img, Duration, Difficulty,
+        Id, Name, Categoryid, Img, Duration, Difficulty,
         Description, Ingridents, Instructions
     };
-    // console.log(updateRecipe);
-
-
     EditRecipyDb(updateRecipe)
         .then(x => res.send(x))
         .catch(err => {
@@ -104,6 +86,7 @@ const Delete = (req, res) => {
             return res.status(400).send(err)
 
         })
+
 }
 
 module.exports = { Delete, EditRecipy, AddRecipy, GetAllRecipe, GetRecipe };

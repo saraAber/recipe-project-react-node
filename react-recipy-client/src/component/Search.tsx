@@ -4,11 +4,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useRecipes } from "../use-context/recipesProvider";
 import { useCategories } from "../use-context/categoryProvider";
 
-const categories = [
-    { id: 1, name: "חלבי" },
-    { id: 2, name: "בשרי" },
-    { id: 3, name: "פרווה" },
-];
+
 
 const difficulties = [
     { id: 1, name: "קל" },
@@ -17,7 +13,7 @@ const difficulties = [
 ];
 
 const Search = () => {
-      const { categories, setCategories } = useCategories();
+    const { categories, setCategories } = useCategories();
     const [filterType, setFilterType] = useState(""); // סוג הסינון שנבחר
     const [filterValue, setFilterValue] = useState(""); // הערך שנבחר לסינון
     const [openSearch, setOpenSearch] = useState(false); // מציין אם התיבה פתוחה או סגורה
@@ -34,6 +30,9 @@ const Search = () => {
             if (filterType === "createdBy" && filterValue) {
                 return recipe?.UserId === Number(filterValue);
             }
+            if (filterType === "category" && filterValue) {
+                return String(recipe?.Difficulty) === String(filterValue);
+            }
             return true;
         });
     };
@@ -44,7 +43,6 @@ const Search = () => {
         filteredRecipes.length === 0 && alert("לא נמצאו מתכונים מתאימים לחיפוש") ;
         console.log("מתכונים מפולטרים:", filteredRecipes);
     };
-
     return (
         <Box sx={{ textAlign: "center" }}>
             <Button
@@ -106,7 +104,7 @@ const Search = () => {
                                 sx={{ "& .MuiSelect-select": { color: "#444" }, "& .MuiOutlinedInput-root": { "& fieldset": { borderColor: "#444" } } }}
                             >
                                 {difficulties.map((diff) => (
-                                    <MenuItem key={diff.id} value={diff.name}>{diff.name}</MenuItem>
+                                    <MenuItem key={diff.id} value={diff.id}>{diff.name}</MenuItem>
                                 ))}
                             </Select>
                         </FormControl>

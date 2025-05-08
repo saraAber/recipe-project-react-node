@@ -5,6 +5,7 @@ const Instructions = require("./model/instructions");
 const Recipe = require("./model/recipe");
 const User = require("./model/user");
 
+
 const sequelize = require('./dbSql');
 sequelize.sync();
 Category.hasMany(Recipe, { foreignKey: "Categoryid" });

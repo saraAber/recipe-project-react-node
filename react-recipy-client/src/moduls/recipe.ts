@@ -9,6 +9,7 @@ export type Rec = {
     Difficulty: number;//string?
     Description: string;
     Category: number;
+    
     Instructions: Instructions[];  
     Ingridents: Ingrident[]; 
     UserId:number

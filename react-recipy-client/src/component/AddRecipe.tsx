@@ -114,7 +114,6 @@ const AddRecipeForm = () => {
       Count: item.Count,
       Type: item.Type,
     }))
-
     const payload = {
       Name: data.Name,
       UserId: userId,
@@ -122,7 +121,7 @@ const AddRecipeForm = () => {
       Difficulty: data.Difficulty,
       Duration: data.Duration,
       Description: data.Description,
-      CategoryId: Number(data.Category),
+      Categoryid: Number(data.Category),
       Img: data.Img,
       Ingridents: mappedIngredients,
     }

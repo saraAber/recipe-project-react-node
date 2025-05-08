@@ -34,7 +34,7 @@ const recipeSchema = Yup.object().shape({
     .required("יש להזין לפחות מרכיב אחד")
     .min(1, "יש להזין לפחות מרכיב אחד"),
 });
-
+// =================== סוגי הנתונים של הטופס=========================
 type FormValues = {
   Name: string;
   Instructions: string;
@@ -49,7 +49,6 @@ type FormValues = {
     Type: string;
   }>;
 };
-
 // =================עיצוב שהוספתי על "אמ יו אי" לשדות והכפתורים של הטופס===========================
 const CustomTextField = styled(TextField)({
   width: '100%',
@@ -137,7 +136,7 @@ const EditRecipe = () => {
       Duration: data.Duration,
       Description: data.Description,
       Difficulty: data.Difficulty,
-      CategoryId: data.Category,
+      Categoryid: data.Category,
       Img: data.Img,
       Ingridents: mappedIngredients,
     };

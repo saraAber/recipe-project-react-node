@@ -1,13 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 import { Rec } from '../moduls/recipe';
-import { Navigate, useLocation } from 'react-router-dom';
-import { UserContext, useUser } from '../use-context/userProvider';
+import { useLocation } from 'react-router-dom';
+import { useUser } from '../use-context/userProvider';
 import { CardActions } from '@mui/material';
 import { Card, CardContent, CardMedia, Button, Typography, Grid } from '@mui/material';
 import { styled } from '@mui/system';
 import { useNavigate } from "react-router-dom";
-import pastaImg from "../images/pasta.jpg";
 import { useRecipes } from '../use-context/recipesProvider';
 
 //mui עיצוב מותאם אישית לכרטיסים בשיתוף 
@@ -131,7 +130,7 @@ const Recipe = () => {
                 component="img"
                 height="250"
                 image={recipe?.Img}
-                alt={pastaImg}
+                alt={"https://asif.org/wp-content/uploads/2022/04/IMG_0905-1-scaled.jpg"}
               />
 
               <CardContent>
@@ -159,7 +158,13 @@ const Recipe = () => {
                 <CustomButton size="small" onClick={() => delRecipe(recipe)}>
                   Delete
                 </CustomButton>
-                <CustomButton size="small" onClick={() => editRecipe(recipe)}>
+                <CustomButton
+                  size="small"
+                  onClick={() => {
+                    editRecipe(recipe);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                >
                   Edit
                 </CustomButton>
               </CardActionsStyled>

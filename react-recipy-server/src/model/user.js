@@ -3,6 +3,7 @@ const sequelize = require('../dbSql');
 const Recipe = require('./recipe');
 const Bay = require('./bay');
 
+
 const User = sequelize.define('user', {
     Id: {
         type: DataTypes.INTEGER,
@@ -40,4 +41,7 @@ const User = sequelize.define('user', {
         unique: true,
     },  
 });
+
+
+
 module.exports = User;

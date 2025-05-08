@@ -4,8 +4,7 @@ import { useForm } from "react-hook-form";
 import { TextField, Button, Grid, styled } from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { User } from "../moduls/user";
-import { UserContext, useUser } from "../use-context/userProvider";
-import { useContext, useEffect } from "react";
+import { useUser } from "../use-context/userProvider";
 import { useNavigate } from "react-router-dom";
 
 type SignInData = {
@@ -66,10 +65,7 @@ const Login = () => {
                 UserName: data.UserName,
                 Password: data.Password
             });
-
             if (response && response.data) {
-                // הדפסה אם הבקשה הצליחה והמשתמש נמצא
-                console.log("✅ התחברות מוצלחת", response.data);
                 console.log("User object being set:", {
                     Id: response.data.Id,
                     Password: response.data.Password,
@@ -92,18 +88,15 @@ const Login = () => {
             } else {
                 console.error("No data found in response");
             }
-            navigate('/home');  // שינוי לדף הבית
+            navigate('/home'); 
             return response.data;
         } catch (error: any) {
-            // אם השרת החזיר תשובת שגיאה (401, 400 וכו')
             if (error.response) {
                 console.error("Server error:", error.response.status, error.response.data);
             }
-            // אם הבקשה בכלל לא הגיעה לשרת (בעיה ברשת למשל)
             else if (error.request) {
                 console.error("Network error: No response received from server");
             }
-            // כל שגיאה אחרת (בעיה בקוד וכו')
             else {
                 console.error("Unexpected error:", error.message);
             }
@@ -140,7 +133,7 @@ const Login = () => {
             <Grid item xs={12}>
               {/* כפתור שליחה */}
               <CustomButton type="submit" variant="contained">
-                הרשמה
+                התחברות
               </CustomButton>
             </Grid>
           </Grid>
