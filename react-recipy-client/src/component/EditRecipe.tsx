@@ -49,22 +49,7 @@ type FormValues = {
     Type: string;
   }>;
 };
-// =================עיצוב שהוספתי על "אמ יו אי" לשדות והכפתורים של הטופס===========================
-const CustomTextField = styled(TextField)({
-  width: '100%',
-  marginBottom: '20px', // רווח בין השדות
-  '& .MuiOutlinedInput-root': {
-    '& fieldset': {
-      borderColor: '#444', // קו מיתאר אפור כהה יותר
-    },
-    '&:hover fieldset': {
-      borderColor: '#444', // קו מיתאר אפור כהה יותר בהובר
-    },
-  },
-  '& .MuiInputLabel-root': {
-    color: '#444', // צבע האותיות של הלייבל אפור כהה יותר
-  }
-});
+
 
 const CustomButton = styled(Button)({
   backgroundColor: '#444', // צבע רקע אפור כהה
